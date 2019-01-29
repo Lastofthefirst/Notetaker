@@ -4,14 +4,36 @@ let title = "",
     timeStamp = "",
     bodyNote = document.getElementById('notedBody'),
     notedDate = document.getElementById('notedDate'),
-    titleNote = document.getElementById('notedTitle');
-
+    titleNote = document.getElementById('notedTitle'),
+    notesCollection = JSON.parse(localStorage.getItem("notesArray")),
+    element = document.getElementById("testNote");
+    if (notesCollection==null) {
+      notesCollection = [];
+    };
+    submitNotes();
 //The below function is called each submit button press to generate a new note.
 function submitNotes(){
-  body = document.getElementById('bodyInput').value,
-  title = document.getElementById('titleInput').value,
-  timeStamp = '\n' + Date();
+  let noteObject = {};
+  noteObject.body = document.getElementById('bodyInput').value;
+  noteObject.title = document.getElementById('titleInput').value;
+  noteObject.timeStamp = '\n' + Date();
+  notesCollection.push(noteObject);
+  let notesCollectionSerialized = JSON.stringify(notesCollection);
+  localStorage.setItem("notesArray", notesCollectionSerialized);
+  notesCollection = JSON.parse(localStorage.getItem("notesArray"));
+  element.innerHTML = "";
+  for (i = 0; i < notesCollection.length; i++){
+    var htmlString = "<h1>"+notesCollection[i].title+"</h1><h5>"+notesCollection[i].timeStamp+"</h5><p>"+notesCollection[i].body+"</p><hr>";
+    var noteDiv = document.createElement('div');
+    noteDiv.innerHTML = htmlString;
+    element.appendChild(noteDiv);
+  }
+}
 
+
+
+
+/*
 //Creates the a variable to create an h1, and a variable for to fill the text with the title value
   let testTitle = document.createElement("h1");
   let titleContent = document.createTextNode(title);
@@ -31,12 +53,10 @@ function submitNotes(){
   testTitle.appendChild(titleContent);
   testBody.appendChild(bodyContent);
   subHeading.appendChild(noteTime);
-  let element = document.getElementById("testNote");
 // Adds the new filled elements as children of the testNote element
   element.appendChild(testTitle);
   element.appendChild(subHeading);
   element.appendChild(testBody);
   element.appendChild(line);
-
-}
+*/
 //console.log(sumbitNotes);
