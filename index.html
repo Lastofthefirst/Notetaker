@@ -1,9 +1,31 @@
 <!DOCTYPE html>
 <html>
 <head>
+
+  <style>
+    #notes_list{
+      display: flex;
+    flex-direction: column;
+    position: fixed;
+    font-size: 14px;
+    line-height: 30px;
+    height: 100vh;
+    width: 140px;
+    border-right: solid;
+  }
+  #main{
+    margin-left: 150px;
+  }
+
+  </style>
+
+
   <title>NoteTaker</title>
 </head>
 <body>
+  <nav id="notes_list">
+  </nav>
+  <div id="main">
   <h1> NoteTaker</h1>
   <h4> Created as an exploration of studied Javascript concepts on Jan 24th 2019</h4>
   <input type="text" placeholder ="Title" id="titleInput">
@@ -11,9 +33,11 @@
   <input type="text" placeholder= "Write your notes here..." id="bodyInput">
   <br>
   <button id ="submit" onclick="submitNotes()">Submit</button>
+  <button id ="delete" onclick="deleteNotes()">Delete All</button>
   <hr>
 
   <div id="testNote"></div>
+</div>
   <script src= "main.js"></script>
 
 </body>
