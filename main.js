@@ -28,7 +28,7 @@ function loadNotes(){
 
 function editMe(thisthis){
     // define the html string, its delicate, needs to be adjusted if more html nodes are added
-    let editString = `<div><h1><input type='text' value='${thisthis.parentNode.children[2].innerText}'></h1><input type='text' value='${thisthis.parentNode.children[4].innerText}'><button style='float:right; margin-right:10px;' onclick='loadNotes()'>Cancel</button><button href='' onclick='saveChanges(this)' style='float:right; margin-right:10px;' data-uid='${thisthis.parentNode.getAttribute('data-uid')}'>Save</button></div><hr>`;
+    let editString = `<div><h1><input type='text' placeholder='Oops! You forgot a title!' value='${thisthis.parentNode.children[2].innerText}'></h1><input type='text' placeholder='No Content!' value='${thisthis.parentNode.children[4].innerText}'><button style='float:right; margin-right:10px;' onclick='loadNotes()'>Cancel</button><button href='' onclick='saveChanges(this)' style='float:right; margin-right:10px;' data-uid='${thisthis.parentNode.getAttribute('data-uid')}'>Save</button></div><hr>`;
   // find the parent replace the parent with an html string.
     thisthis.parentNode.parentNode.innerHTML = editString;
 }
