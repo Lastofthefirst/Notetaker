@@ -16,7 +16,7 @@ let title = "",
 function loadNotes(){
   element.innerHTML = "";
   for (i = 0; i < notesCollection.length; i++){
-      var htmlString = "<div><button href='#' onclick='deleteMe(this);' style='float:right; margin-right:10px;' data-uid='"+notesCollection[i].uid+"'>X</button><button href='#' onclick='editMe(this);' style='float:right; margin-right:10px;' >Edit</button><h1>"+notesCollection[i].title+"</h1><h5>"+notesCollection[i].timeStamp+"</h5><p>"+notesCollection[i].body+"</p></div><hr>";
+      var htmlString = "<div data-uid='"+notesCollection[i].uid+"' ><button href='#' onclick='deleteMe(this);' style='float:right; margin-right:10px;' data-uid='"+notesCollection[i].uid+"'>X</button><button href='#' onclick='editMe(this);' style='float:right; margin-right:10px;' >Edit</button><h1>"+notesCollection[i].title+"</h1><h5>"+notesCollection[i].timeStamp+"</h5><p>"+notesCollection[i].body+"</p></div><hr>";
       var noteDiv = document.createElement('article');
       noteDiv.innerHTML = htmlString;
       element.appendChild(noteDiv);
@@ -27,19 +27,39 @@ function loadNotes(){
 };
 
 function editMe(thisthis){
-    // define the html string
-    let editString = "<div><h1><input type='text' value='"+thisthis.parentNode.children[2].innerText+"'></h1><input type='text' value='"+thisthis.parentNode.children[4].innerText+"'><button style='float:right; margin-right:10px;' onclick='loadNotes()'>Cancel</button><button href='' onclick='saveChanges(this)' style='float:right; margin-right:10px;'>Save</button></div><hr>";
+    // define the html string, its delicate, needs to be adjusted if more html nodes are added
+    let editString = `<div><h1><input type='text' value='${thisthis.parentNode.children[2].innerText}'></h1><input type='text' value='${thisthis.parentNode.children[4].innerText}'><button style='float:right; margin-right:10px;' onclick='loadNotes()'>Cancel</button><button href='' onclick='saveChanges(this)' style='float:right; margin-right:10px;' data-uid='${thisthis.parentNode.getAttribute('data-uid')}'>Save</button></div><hr>`;
   // find the parent replace the parent with an html string.
     thisthis.parentNode.parentNode.innerHTML = editString;
-
 }
 
-function saveChanges(thisHere){
-  // pull the text from the newly generated inputfields (how do i navigate to them, must be through the dom?)
-  let newBody = thisHere.parentNode.children[1].value;
-  let newTitle = thisHere.parentNode.children[0].children[0].value;
-  thisHere.parentNode.parentNode.innerHTML = newTitle + newBody;
+// Finds a particular Object's index by a given property
+// Super useful, i think ES6 has a way to make it a little cleaner with a newer version of a for loop
+function findWithAttr(array, attr, value) {
+    for(var i = 0; i < array.length; i += 1) {
+        if(array[i][attr] == value) {
+            return i;
+        }
+    }
+    return -1;
+}
 
+// Saves the changes made from the editMe function to the original object and reloads notes.
+function saveChanges(thisHere){
+  // This is a bit delicate, will need to be adjusted if new html nodes are added above.
+  let newBody = thisHere.parentNode.children[1].value,
+      newTitle = thisHere.parentNode.children[0].children[0].value,
+      thisUid = thisHere.getAttribute("data-uid"),
+      thisIndex = findWithAttr(notesCollection, 'uid', thisUid);
+
+  notesCollection[thisIndex].title = newTitle;
+  notesCollection[thisIndex].body = newBody;
+
+  let notesCollectionSerialized = JSON.stringify(notesCollection);
+  localStorage.setItem("notesArray", notesCollectionSerialized);
+    // 5. Reload notes & title list
+  loadNotes();
+  titleList();
   // Set the .title and .body properties of the particular note object to the new input's values.
 
 };
