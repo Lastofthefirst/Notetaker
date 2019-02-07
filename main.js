@@ -1,3 +1,32 @@
+// We were using the old firebase db docs but new firebase db technology. Proper documentation link below:
+// https://firebase.google.com/docs/firestore/quickstart
+firebase.initializeApp({
+  apiKey: 'AIzaSyDo8Th41BZFvbKXktdzALz6rv5bs8DsFAU',
+  authDomain: 'notetakerone.firebaseapp.com',
+  projectId: 'notetakerone'
+});
+const db = firebase.firestore();
+const settings = {timestampsInSnapshots: true};
+db.settings(settings);
+
+db.collection("notes").add({
+  title: "new",
+  body: "newnewnew"
+})
+.then(function(noteRef) {
+  console.log("Document written with ID: ", noteRef.id);
+})
+.catch(function(error) {
+  console.error("Error adding document: ", error);
+});
+
+db.collection("notes").get().then((notesSnapshot) => {
+  notesSnapshot.forEach((note) => {
+      console.log(note.data());
+  });
+});
+
+
 //let submitNotes = () => getElementById('titleInput').value;
 let title = "",
     body = "",
