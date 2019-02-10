@@ -9,10 +9,11 @@ const db = firebase.firestore();
 const settings = {timestampsInSnapshots: true};
 db.settings(settings);
 
-db.collection("notes").add({
+/*db.collection("notes").add({
   title: "new",
-  body: "newnewnew"
+  body: "Quddus was here"
 })
+
 .then(function(noteRef) {
   console.log("Document written with ID: ", noteRef.id);
 })
@@ -25,7 +26,7 @@ db.collection("notes").get().then((notesSnapshot) => {
       console.log(note.data());
   });
 });
-
+*/
 
 //let submitNotes = () => getElementById('titleInput').value;
 let title = "",
@@ -53,6 +54,17 @@ function loadNotes(){
         notesCollection = [];
     }
   }
+  db.collection("notes").get().then((notesSnapshot) => {
+        notesSnapshot.forEach((thisData) => {
+          if (thisData && thisData.exists) {
+            let thisDBnote = thisData.data();
+        let dbhtmlstring = `<div data-uid='${thisDBnote.uid}'><h1>--BOOMSHAKALAKA--${thisDBnote.title}</h1><h5>${thisDBnote.time}</h5><p>--THIS ONES FROM THE DATABASE---${thisDBnote.body}</p></div><hr>`
+        let makeDBnote = document.createElement('article')
+        makeDBnote.innerHTML = dbhtmlstring;
+        element.appendChild(makeDBnote);
+}
+        });
+      });
 };
 
 function editMe(thisthis){
@@ -139,6 +151,12 @@ function submitNotes(){
   let notesCollectionSerialized = JSON.stringify(notesCollection);
   localStorage.setItem("notesArray", notesCollectionSerialized);
   notesCollection = JSON.parse(localStorage.getItem("notesArray"));
+  db.collection("notes").add({
+        title: notesCollection[i].title,
+        time: notesCollection[i].timeStamp,
+        body: notesCollection[i].body,
+        uid: notesCollection[i].uid
+      });
   loadNotes();
   titleList();
 };
@@ -149,6 +167,12 @@ function deleteNotes(){
   notesCollection = [];
   element.innerHTML = "";
   titleList();
+  let deleteAll = db.collection('notes');
+  deleteAll.get().then(function(querySnapshot) {
+  querySnapshot.forEach(function(doc) {
+    doc.ref.delete();
+  });
+});
 };
 
 
