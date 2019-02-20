@@ -28,8 +28,8 @@ function loadNotes(){
     notesCollection.forEach((thisData) => {
       if (thisData && thisData.exists) {
         let thisDBnote = thisData.data();
-        let dbhtmlstring = `<div data-uid='${thisData.id}'></div><button href='#' onclick='deleteMe(this);' style='float:right; margin-right:10px;' data-uid='${thisData.id}'>X</button><button href='#' onclick='editMe(this);' style='float:right; margin-right:10px;' >Edit</button><h1>--BOOMSHAKALAKA--${thisDBnote.title}</h1><h5>${thisDBnote.time}</h5><p>--THIS ONES FROM THE DATABASE---${thisDBnote.body}</p></div><hr>`
-        let makeDBnote = document.createElement('article')
+        let dbhtmlstring = `<div data-uid='${thisData.id}'></div><button href='#' onclick='deleteMe(this);' style='float:right; margin-right:10px;' data-uid='${thisData.id}'>X</button><button href='#' onclick='editMe(this);' style='float:right; margin-right:10px;' >Edit</button><h1>${thisDBnote.title}</h1><h5>${thisDBnote.time}</h5><p>${thisDBnote.body}</p></div><hr>`;
+        let makeDBnote = document.createElement('article');
         makeDBnote.innerHTML = dbhtmlstring;
         element.appendChild(makeDBnote);
       }
@@ -39,7 +39,7 @@ function loadNotes(){
 
 function editMe(thisthis){
     // define the html string, its delicate, needs to be adjusted if more html nodes are added
-    let dataId = thisthis.parentNode.parentNode.children[1].getAttribute('data-uid');
+    let dataId = thisthis.parentNode.children[1].getAttribute('data-uid');
     let editString = `<div><h1><input type='text' placeholder='Oops! You forgot a title!' value='${thisthis.parentNode.children[3].innerText}'></h1><input type='text' placeholder='No Content!' value='${thisthis.parentNode.children[5].innerText}'><button style='float:right; margin-right:10px;' onclick='loadNotes()'>Cancel</button><button href='' onclick='saveChanges(this)' style='float:right; margin-right:10px;' data-uid='${dataId}'>Save</button></div><hr>`;
   // find the parent replace the parent with an html string.
     thisthis.parentNode.innerHTML = editString;
@@ -75,30 +75,31 @@ function saveChanges(thisHere){
   loadNotes();
   titleList();
   // Set the .title and .body properties of the particular note object to the new input's values.
-
 };
-// Deletes a specific note from the array, localStorage and the display.
+// Deletes a specific note from the database, then reloads the feilds.
 function deleteMe(thisthis){
-    // 1. find parent of the button, delete parent from DOM
-  thisthis.parentNode.parentNode.parentNode.removeChild(thisthis.parentNode.parentNode);
-    // 2. find object in array
   var thisUid = thisthis.getAttribute("data-uid");
-    // 3. delete object from array
-  notesCollection = notesCollection.filter(function( obj ) {
-    return obj.uid !== thisUid;
-  });
-    // 4. save array to localstorage
-  let notesCollectionSerialized = JSON.stringify(notesCollection);
-  localStorage.setItem("notesArray", notesCollectionSerialized);
-    // 5. Reload notes & title list
+  notesDb.doc(thisUid).delete();
   loadNotes();
   titleList();
-
 };
 
 //Adds an h2 with the title of the new note upon creation.
 // fix this for firebase
 function titleList(){
+  list.innerHTML = "<h1>List of Notes</h1>";
+  notesDb.get().then((notesSnapshot) => {
+    listCollection = notesSnapshot;
+    listCollection.forEach((thisData) => {
+      if (thisData && thisData.exists) {
+        let noted = thisData.data();
+        let listContent = `<h2>${noted.title}</h2>`;
+        let listDiv= document.createElement('div');
+        listDiv.innerHTML = listContent;
+        list.appendChild(listDiv);
+      }
+    });
+  });
   /*
   list.innerHTML = "<h1>List of Notes</h1>";
   for (i = 0; i < notesCollection.length; i++){
@@ -125,12 +126,12 @@ function submitNotes(){
 function deleteNotes(){
   localStorage.clear("notesArray");
   element.innerHTML = "";
-  titleList();
+  list.innerHTML = "<h1>List of Notes</h1>";
   let deleteAll = db.collection('notes');
   deleteAll.get().then(function(querySnapshot) {
     // find more efficient method
-  querySnapshot.forEach(function(doc) {
-    doc.ref.delete();
+    querySnapshot.forEach(function(doc) {
+      doc.ref.delete();
+    });
   });
-});
 };
