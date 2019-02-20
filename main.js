@@ -28,7 +28,7 @@ function loadNotes(){
     notesCollection.forEach((thisData) => {
       if (thisData && thisData.exists) {
         let thisDBnote = thisData.data();
-        let dbhtmlstring = `<div data-uid='${thisData.id}'></div><button href='#' onclick='deleteMe(this);' style='float:right; margin-right:10px;' data-uid='${thisData.id}'>X</button><button href='#' onclick='editMe(this);' style='float:right; margin-right:10px;' >Edit</button><h1>${thisDBnote.title}</h1><h5>${thisDBnote.time}</h5><p>${thisDBnote.body}</p></div><hr>`;
+        let dbhtmlstring = `<div data-uid='${thisData.id}'></div><button href='#' onclick='deleteMe(this);' style='float:right; margin-right:10px;' data-uid='${thisData.id}'>X</button><button href='#' onclick='editMe(this);' style='float:right; margin-right:10px;' >Edit</button><h1>${thisDBnote.title}</h1><div>Note Created:</div><h5>${thisDBnote.timeStamp}</h5><p>${thisDBnote.body}</p></div><hr>`;
         let makeDBnote = document.createElement('article');
         makeDBnote.innerHTML = dbhtmlstring;
         element.appendChild(makeDBnote);
@@ -40,7 +40,7 @@ function loadNotes(){
 function editMe(thisthis){
     // define the html string, its delicate, needs to be adjusted if more html nodes are added
     let dataId = thisthis.parentNode.children[1].getAttribute('data-uid');
-    let editString = `<div><h1><input type='text' placeholder='Oops! You forgot a title!' value='${thisthis.parentNode.children[3].innerText}'></h1><input type='text' placeholder='No Content!' value='${thisthis.parentNode.children[5].innerText}'><button style='float:right; margin-right:10px;' onclick='loadNotes()'>Cancel</button><button href='' onclick='saveChanges(this)' style='float:right; margin-right:10px;' data-uid='${dataId}'>Save</button></div><hr>`;
+    let editString = `<div><h1><input type='text' placeholder='Oops! You forgot a title!' value='${thisthis.parentNode.children[3].innerText}'></h1><input type='text' placeholder='No Content!' value='${thisthis.parentNode.children[6].innerText}'><button style='float:right; margin-right:10px;' onclick='loadNotes()'>Cancel</button><button href='' onclick='saveChanges(this)' style='float:right; margin-right:10px;' data-uid='${dataId}' data-time='${thisthis.parentNode.children[5].innerText}'>Save</button></div><hr>`;
   // find the parent replace the parent with an html string.
     thisthis.parentNode.innerHTML = editString;
 }
@@ -61,10 +61,12 @@ function saveChanges(thisHere){
   let newBody = thisHere.parentNode.children[1].value,
     newTitle = thisHere.parentNode.children[0].children[0].value,
     noteId = thisHere.getAttribute("data-uid");
+    sameTime = thisHere.getAttribute('data-time');
   console.log(noteId);
   notesDb.doc(noteId).set({
     title: newTitle,
-    body: newBody
+    body: newBody,
+    timeStamp: sameTime
   })
   .then(function() {
       console.log("Document successfully written!");
