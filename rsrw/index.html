@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>RSRW</title>
+	<script src="https://www.gstatic.com/firebasejs/5.8.2/firebase-app.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/5.8.2/firebase-auth.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/5.8.2/firebase-firestore.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/5.8.2/firebase-functions.js"></script>
+	<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+		integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+		integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+	<script src="js/app.js"></script>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+		integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<link rel="stylesheet" type="text/css" href="css/app.css">
+</head>
+
+<body class="text-center">
+	<a id="logoutBtn" style="position:absolute; right:10px; top:10px; display:none;" class="btn btn-sm btn-outline-secondary" href="#"
+		onclick="logout();">Logout
+		(<span id="emailDisplay"></span>)</a>
+	<h4>RSRW Anecdotals <img class="mb-3" src="img/logo.png" alt="" width="72"></h4>
+	<div id="loginCard" class="form-signin" style="display:none;">
+		<label for="inputEmail" class="sr-only">Email address</label>
+		<input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
+		<label for="inputPassword" class="sr-only">Password</label>
+		<input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+		<button class="btn btn-lg btn-primary btn-block" onclick="login();">Sign in</button>
+	</div>
+	<form id="newNoteCard">
+		<div class="container">
+			<div class="col-md-12">
+				<div class="form-group">
+					<select class="form-control" id="activitySelect">
+						<option>Select Activity</option>
+					</select>
+				</div>
+				<textarea class="form-control" placeholder="Your Note" rows="4" id="noteTextarea"></textarea>
+				<button class="btn btn-outline-primary btn-block" style="margin-top:15px;" onclick="saveNote();">Save</button>
+				<ul class="mail-list" id="notesList"></ul>
+			</div>
+		</div>
+	</form>
+	<p style="margin-top:25px;" class="text-muted">&copy; 2019 Race Story Rewrite Project</p>
+</body>
+
+</html>

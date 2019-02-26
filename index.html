@@ -26,16 +26,27 @@
 </head>
 <body>
   <nav id="notes_list">
+    <div onclick="displayNotes('Action');">ACTION</div>
+    <div onclick="displayNotes('Reflection');">REFLECTION</div>
+    <div onclick="displayNotes('Study');">STUDY</div>
+    <div onclick="displayNotes('all');">ALL NOTES</div>
   </nav>
   <div id="main">
   <h1> NoteTaker</h1>
   <h4> Created as an exploration of studied Javascript concepts on Jan 24th 2019</h4>
+  <select id="noteTypeInput">
+    <option>Select Type</option>
+    <option>Action</option>
+    <option>Reflection</option>
+    <option>Study</option>
+  </select>
+  <br>
   <input type="text"  placeholder ="Title" id="titleInput">
   <br>
   <input type="text" placeholder= "Write your notes here..." id="bodyInput">
   <br>
-  <button id ="submit" onclick="submitNotes()">Submit</button>
-  <button id ="delete" onclick="deleteNotes()">Delete All</button>
+  <button id="submit" onclick="submitNotes()">Submit</button>
+  <button id="delete" onclick="deleteNotes()">Delete All</button>
   <hr>
 
   <div id="testNote"></div>

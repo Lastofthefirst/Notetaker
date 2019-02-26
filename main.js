@@ -18,24 +18,37 @@ let title = "",
     list = document.getElementById("notes_list"),
     notesCollection;
 loadNotes();
-titleList();
+//titleList();
 
 // Below the array of note objects is iterated through adding html elements containing the properties of each note objects.
 function loadNotes(){
-  element.innerHTML = "";
   notesDb.get().then((notesSnapshot) => {
     notesCollection = notesSnapshot;
-    notesCollection.forEach((thisData) => {
-      if (thisData && thisData.exists) {
-        let thisDBnote = thisData.data();
-        let dbhtmlstring = `<div data-uid='${thisData.id}'></div><button href='#' onclick='deleteMe(this);' style='float:right; margin-right:10px;' data-uid='${thisData.id}'>X</button><button href='#' onclick='editMe(this);' style='float:right; margin-right:10px;' >Edit</button><h1>${thisDBnote.title}</h1><div>Note Created:</div><h5>${thisDBnote.timeStamp}</h5><p>${thisDBnote.body}</p></div><hr>`;
-        let makeDBnote = document.createElement('article');
-        makeDBnote.innerHTML = dbhtmlstring;
-        element.appendChild(makeDBnote);
-      }
-    });
+    displayNotes('all');
   });
 };
+
+function displayNotes(type){
+  let filteredNotesCollection = [];
+  if (type == "all") {
+    filteredNotesCollection = notesCollection;
+  } else {
+    // either use firebase method OR convert to a regular js collection OR see if its possible to get js objecrt returned from firebase
+    filteredNotesCollection.filter(function (note) {
+      return note.type == type;
+    });
+  }
+  element.innerHTML = "";
+  filteredNotesCollection.forEach((thisData) => {
+    if (thisData && thisData.exists) {
+      let thisDBnote = thisData.data();
+      let dbhtmlstring = `<div data-uid='${thisData.id}'></div><button href='#' onclick='deleteMe(this);' style='float:right; margin-right:10px;' data-uid='${thisData.id}'>X</button><button href='#' onclick='editMe(this);' style='float:right; margin-right:10px;' >Edit</button><h1>${thisDBnote.title}</h1><div>Note Created:</div><h5>${thisDBnote.timeStamp}</h5><p>${thisDBnote.body}</p></div><hr>`;
+      let makeDBnote = document.createElement('article');
+      makeDBnote.innerHTML = dbhtmlstring;
+      element.appendChild(makeDBnote);
+    }
+  });
+}
 
 function editMe(thisthis){
     // define the html string, its delicate, needs to be adjusted if more html nodes are added
@@ -75,7 +88,7 @@ function saveChanges(thisHere){
       console.error("Error writing document: ", error);
   });
   loadNotes();
-  titleList();
+  //titleList();
   // Set the .title and .body properties of the particular note object to the new input's values.
 };
 // Deletes a specific note from the database, then reloads the feilds.
@@ -83,14 +96,15 @@ function deleteMe(thisthis){
   var thisUid = thisthis.getAttribute("data-uid");
   notesDb.doc(thisUid).delete();
   loadNotes();
-  titleList();
+  //titleList();
 };
 
 //Adds an h2 with the title of the new note upon creation.
 // fix this for firebase
+/*
 function titleList(){
-  list.innerHTML = "<h1>List of Notes</h1>";
   notesDb.get().then((notesSnapshot) => {
+    list.innerHTML = "<h1>List of Notes</h1>";
     listCollection = notesSnapshot;
     listCollection.forEach((thisData) => {
       if (thisData && thisData.exists) {
@@ -102,33 +116,26 @@ function titleList(){
       }
     });
   });
-  /*
-  list.innerHTML = "<h1>List of Notes</h1>";
-  for (i = 0; i < notesCollection.length; i++){
-    let listContent = "<h2>" + notesCollection[i].title+"<h2>";
-    let listDiv = document.createElement('div');
-    listDiv.innerHTML = listContent;
-    list.appendChild(listDiv);
-  }
-  */
 }
+*/
 
 //The below function is called each submit button press to create an object with a title, timestamp and body, these are added to an array then set in localstorage
 function submitNotes(){
   let noteObject = {};
+  noteObject.type = document.getElementById('noteTypeInput').value;
   noteObject.body = document.getElementById('bodyInput').value;
   noteObject.title = document.getElementById('titleInput').value;
   noteObject.timeStamp = '\n' + Date();
   db.collection("notes").add(noteObject);
   loadNotes();
-  titleList();
+  //titleList();
 };
 
 // Below localStorage is cleared, as well as the array of note objects and the output html element.
 function deleteNotes(){
   localStorage.clear("notesArray");
   element.innerHTML = "";
-  list.innerHTML = "<h1>List of Notes</h1>";
+  //list.innerHTML = "<h1>List of Notes</h1>";
   let deleteAll = db.collection('notes');
   deleteAll.get().then(function(querySnapshot) {
     // find more efficient method
